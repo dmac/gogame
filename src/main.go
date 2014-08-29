@@ -21,6 +21,9 @@ func main() {
 	world := w.LoadWorld("resources/worlds/basic.txt", g)
 	player := entity.NewPlayer(g, world)
 	moblin := entity.NewMoblin(g, world)
+	sword := entity.NewSword(g)
+
+	player.SetActiveItem(sword)
 
 	running := true
 	for running {
@@ -40,6 +43,8 @@ func main() {
 					player.Move(w.South)
 				case sdl.K_a:
 					player.Move(w.West)
+				case sdl.K_SPACE:
+					player.SetActiveItemState(true)
 				}
 			case *sdl.KeyUpEvent:
 				switch event.Keysym.Sym {
@@ -51,6 +56,8 @@ func main() {
 					player.Stop(w.South)
 				case sdl.K_a:
 					player.Stop(w.West)
+				case sdl.K_SPACE:
+					player.SetActiveItemState(false)
 				}
 			}
 
@@ -61,9 +68,9 @@ func main() {
 		moblin.Update(dt, world)
 
 		g.Renderer.Clear()
-		world.Draw()
 		player.Draw()
 		moblin.Draw()
+		world.Draw()
 		fps.DisplayFPS()
 		g.Renderer.Present()
 
