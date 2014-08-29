@@ -20,8 +20,8 @@ func New(filename string, graphics *graphics.Graphics) *Sprite {
 	surface := img.Load(filename)
 	texture := graphics.Renderer.CreateTextureFromSurface(surface)
 	return &Sprite{
-		X:       100,
-		Y:       100,
+		X:       0,
+		Y:       0,
 		W:       float32(surface.W),
 		H:       float32(surface.H),
 		texture: texture,

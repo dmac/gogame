@@ -1,57 +1,64 @@
 package entity
 
 import (
+	"github.com/veandco/go-sdl2/sdl"
+
 	"graphics"
 	"sprite"
-)
-
-type Direction byte
-
-const (
-	North Direction = 1 << iota
-	East
-	South
-	West
+	"world"
 )
 
 type Player struct {
-	Direction Direction
-	s         *sprite.Sprite
+	direction world.Direction
 	speed     float32 // pixels/s
+	spr       *sprite.Sprite
 }
 
 func NewPlayer(g *graphics.Graphics) *Player {
 	return &Player{
-		Direction: 0,
-		s:         sprite.New("resources/link.gif", g),
+		direction: 0,
+		spr:       sprite.New("resources/link.gif", g),
 		speed:     200,
 	}
 }
 
-func (p *Player) Move(d Direction) {
-	p.Direction |= d
+func (p *Player) Move(d world.Direction) {
+	p.direction |= d
 }
 
-func (p *Player) Stop(d Direction) {
-	p.Direction &^= d
+func (p *Player) Stop(d world.Direction) {
+	p.direction &^= d
 }
 
-func (p *Player) Update(dt uint32) {
+func (p *Player) Update(dt uint32, w *world.World) {
 	velocity := p.speed * float32(dt) / 1000
-	if p.Direction&North > 0 {
-		p.s.Y -= velocity
+	if p.direction&world.North > 0 {
+		p.spr.Y -= velocity
+		w.CollideWithTiles(p, world.North)
 	}
-	if p.Direction&East > 0 {
-		p.s.X += velocity
+	if p.direction&world.East > 0 {
+		p.spr.X += velocity
+		w.CollideWithTiles(p, world.East)
 	}
-	if p.Direction&South > 0 {
-		p.s.Y += velocity
+	if p.direction&world.South > 0 {
+		p.spr.Y += velocity
+		w.CollideWithTiles(p, world.South)
 	}
-	if p.Direction&West > 0 {
-		p.s.X -= velocity
+	if p.direction&world.West > 0 {
+		p.spr.X -= velocity
+		w.CollideWithTiles(p, world.West)
 	}
+}
+
+func (p *Player) Bounds() *sdl.Rect {
+	return &sdl.Rect{int32(p.spr.X), int32(p.spr.Y), int32(p.spr.W), int32(p.spr.H)}
+}
+
+func (p *Player) SetBounds(r *sdl.Rect) {
+	p.spr.X = float32(r.X)
+	p.spr.Y = float32(r.Y)
 }
 
 func (p *Player) Draw() {
-	p.s.Draw()
+	p.spr.Draw()
 }

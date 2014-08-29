@@ -1,13 +1,12 @@
 package main
 
 import (
-	"world"
-
 	"github.com/veandco/go-sdl2/sdl"
 
 	"entity"
 	"fps"
 	"graphics"
+	w "world"
 )
 
 func main() {
@@ -20,7 +19,7 @@ func main() {
 	fps.Init(60, g)
 
 	player := entity.NewPlayer(g)
-	world := world.LoadWorld("resources/worlds/basic.txt", g)
+	world := w.LoadWorld("resources/worlds/basic.txt", g)
 
 	running := true
 	for running {
@@ -33,31 +32,31 @@ func main() {
 				case sdl.K_ESCAPE:
 					running = false
 				case sdl.K_w:
-					player.Move(entity.North)
+					player.Move(w.North)
 				case sdl.K_d:
-					player.Move(entity.East)
+					player.Move(w.East)
 				case sdl.K_s:
-					player.Move(entity.South)
+					player.Move(w.South)
 				case sdl.K_a:
-					player.Move(entity.West)
+					player.Move(w.West)
 				}
 			case *sdl.KeyUpEvent:
 				switch event.Keysym.Sym {
 				case sdl.K_w:
-					player.Stop(entity.North)
+					player.Stop(w.North)
 				case sdl.K_d:
-					player.Stop(entity.East)
+					player.Stop(w.East)
 				case sdl.K_s:
-					player.Stop(entity.South)
+					player.Stop(w.South)
 				case sdl.K_a:
-					player.Stop(entity.West)
+					player.Stop(w.West)
 				}
 			}
 
 		}
 
 		dt := fps.Dt()
-		player.Update(dt)
+		player.Update(dt, world)
 
 		g.Renderer.Clear()
 		world.Draw()
