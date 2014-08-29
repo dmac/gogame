@@ -1,6 +1,8 @@
 package main
 
 import (
+	"world"
+
 	"github.com/veandco/go-sdl2/sdl"
 
 	"entity"
@@ -18,6 +20,7 @@ func main() {
 	fps.Init(60, g)
 
 	player := entity.NewPlayer(g)
+	world := world.NewWorld(g)
 
 	running := true
 	for running {
@@ -57,6 +60,7 @@ func main() {
 		player.Update(dt)
 
 		g.Renderer.Clear()
+		world.Draw()
 		player.Draw()
 		fps.DisplayFPS()
 		g.Renderer.Present()
