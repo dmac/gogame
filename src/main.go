@@ -20,7 +20,7 @@ func main() {
 	fps.Init(60, g)
 
 	player := entity.NewPlayer(g)
-	world := world.NewWorld(g)
+	world := world.LoadWorld("resources/worlds/basic.txt", g)
 
 	running := true
 	for running {
