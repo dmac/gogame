@@ -5,9 +5,9 @@ import (
 
 	"github.com/veandco/go-sdl2/sdl"
 
+	"./entity"
 	"./fps"
 	"./graphics"
-	"./sprite"
 )
 
 func main() {
@@ -17,12 +17,7 @@ func main() {
 
 	g := graphics.New(renderer)
 
-	sprite := sprite.New("resources/link.gif", g)
-
-	moveUp := false
-	moveRight := false
-	moveDown := false
-	moveLeft := false
+	player := entity.NewPlayer(g)
 
 	fps.Init(60, g)
 
@@ -37,48 +32,36 @@ func main() {
 				case sdl.K_ESCAPE:
 					running = false
 				case sdl.K_w:
-					moveUp = true
+					player.Move(entity.North)
 				case sdl.K_d:
-					moveRight = true
+					player.Move(entity.East)
 				case sdl.K_s:
-					moveDown = true
+					player.Move(entity.South)
 				case sdl.K_a:
-					moveLeft = true
+					player.Move(entity.West)
 				default:
 					fmt.Println(event.Keysym)
 				}
 			case *sdl.KeyUpEvent:
 				switch event.Keysym.Sym {
 				case sdl.K_w:
-					moveUp = false
+					player.Stop(entity.North)
 				case sdl.K_d:
-					moveRight = false
+					player.Stop(entity.East)
 				case sdl.K_s:
-					moveDown = false
+					player.Stop(entity.South)
 				case sdl.K_a:
-					moveLeft = false
+					player.Stop(entity.West)
 				}
 			}
 
 		}
 
-		var speed int32 = 10
-		if moveUp {
-			sprite.Y -= speed
-		}
-		if moveRight {
-			sprite.X += speed
-		}
-		if moveDown {
-			sprite.Y += speed
-		}
-		if moveLeft {
-			sprite.X -= speed
-		}
+		player.Update()
 
 		g.Renderer.Clear()
 
-		sprite.Draw()
+		player.Draw()
 		fps.DisplayFPS()
 
 		g.Renderer.Present()
