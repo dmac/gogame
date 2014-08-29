@@ -57,10 +57,8 @@ func main() {
 		player.Update(dt)
 
 		g.Renderer.Clear()
-
 		player.Draw()
 		fps.DisplayFPS()
-
 		g.Renderer.Present()
 
 		fps.Update()
