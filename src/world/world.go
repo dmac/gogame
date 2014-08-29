@@ -30,6 +30,7 @@ type tileKind struct{ v byte }
 
 var Wall tileKind = tileKind{v: 0}
 var PlayerStart tileKind = tileKind{v: 1}
+var MoblinStart tileKind = tileKind{v: 2}
 
 type tile struct {
 	row  int32
@@ -42,7 +43,11 @@ type World struct {
 	tiles []tile
 }
 
+var wallSprite *sprite.Sprite
+
 func LoadWorld(filename string, g *graphics.Graphics) *World {
+	wallSprite = sprite.New("resources/block.gif", g)
+
 	f, err := os.Open(filename)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to open world file: %s", filename))
@@ -63,14 +68,25 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 		for col, c := range s {
 			switch c {
 			case '-', '|':
-				spr := sprite.New("resources/block.gif", g)
-				spr.X = float32(col) * spr.W
-				spr.Y = float32(row) * spr.H
 				newTile := tile{
 					row:  int32(row),
 					col:  int32(col),
 					kind: Wall,
-					spr:  spr,
+					spr:  wallSprite,
+				}
+				tiles = append(tiles, newTile)
+			case '@':
+				newTile := tile{
+					row:  int32(row),
+					col:  int32(col),
+					kind: PlayerStart,
+				}
+				tiles = append(tiles, newTile)
+			case 'm':
+				newTile := tile{
+					row:  int32(row),
+					col:  int32(col),
+					kind: MoblinStart,
 				}
 				tiles = append(tiles, newTile)
 			}
@@ -113,6 +129,15 @@ func (w *World) CollideWithTiles(b Bounded, d Direction) {
 	}
 }
 
+func (w *World) FindTileKind(tk tileKind) *tile {
+	for _, t := range w.tiles {
+		if t.kind == tk {
+			return &t
+		}
+	}
+	return nil
+}
+
 func (w *World) Draw() {
 	for _, tile := range w.tiles {
 		tile.Draw()
@@ -129,8 +154,10 @@ func (t *tile) Draw() {
 }
 
 func (t *tile) Bounds() *sdl.Rect {
-	if t.spr == nil {
-		return nil
+	r := &sdl.Rect{t.col * int32(wallSprite.W), t.row * int32(wallSprite.H), 0, 0}
+	if t.spr != nil {
+		r.W = int32(t.spr.W)
+		r.H = int32(t.spr.H)
 	}
-	return &sdl.Rect{int32(t.spr.X), int32(t.spr.Y), int32(t.spr.W), int32(t.spr.H)}
+	return r
 }

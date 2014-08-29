@@ -18,8 +18,9 @@ func main() {
 	g := graphics.New(renderer)
 	fps.Init(60, g)
 
-	player := entity.NewPlayer(g)
 	world := w.LoadWorld("resources/worlds/basic.txt", g)
+	player := entity.NewPlayer(g, world)
+	moblin := entity.NewMoblin(g, world)
 
 	running := true
 	for running {
@@ -57,10 +58,12 @@ func main() {
 
 		dt := fps.Dt()
 		player.Update(dt, world)
+		moblin.Update(dt, world)
 
 		g.Renderer.Clear()
 		world.Draw()
 		player.Draw()
+		moblin.Draw()
 		fps.DisplayFPS()
 		g.Renderer.Present()
 
