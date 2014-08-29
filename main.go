@@ -14,12 +14,12 @@ func main() {
 	window := sdl.CreateWindow("gogame", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		800, 600, sdl.WINDOW_SHOWN)
 	renderer := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
+	renderer.SetDrawColor(50, 50, 50, 255)
 
 	g := graphics.New(renderer)
+	fps.Init(60, g)
 
 	player := entity.NewPlayer(g)
-
-	fps.Init(60, g)
 
 	running := true
 	for running {
