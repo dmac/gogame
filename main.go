@@ -57,7 +57,8 @@ func main() {
 
 		}
 
-		player.Update()
+		dt := fps.Dt()
+		player.Update(dt)
 
 		g.Renderer.Clear()
 

@@ -14,6 +14,7 @@ var startTick uint32
 var lastSecTick uint32
 var frameCount uint32
 var frameDisplay uint32
+var dt uint32
 
 func Init(max uint32, graphics *graphics.Graphics) {
 	tick := sdl.GetTicks()
@@ -21,6 +22,15 @@ func Init(max uint32, graphics *graphics.Graphics) {
 	maxFPS = max
 	startTick = tick
 	lastSecTick = tick
+	dt = tick
+}
+
+// Dt returns the time between now and the last time it was called in milliseconds.
+func Dt() uint32 {
+	now := sdl.GetTicks()
+	delta := now - dt
+	dt = now
+	return delta
 }
 
 func Update() {
