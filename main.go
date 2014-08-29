@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/veandco/go-sdl2/sdl"
 
 	"./entity"
@@ -39,8 +37,6 @@ func main() {
 					player.Move(entity.South)
 				case sdl.K_a:
 					player.Move(entity.West)
-				default:
-					fmt.Println(event.Keysym)
 				}
 			case *sdl.KeyUpEvent:
 				switch event.Keysym.Sym {
