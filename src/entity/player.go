@@ -9,21 +9,23 @@ import (
 )
 
 type Player struct {
-	direction world.Direction
+	x         float32
+	y         float32
 	speed     float32 // pixels/s
+	direction world.Direction
 	spr       *sprite.Sprite
 }
 
 func NewPlayer(g *graphics.Graphics, w *world.World) *Player {
 	player := &Player{
+		speed:     200,
 		direction: 0,
 		spr:       sprite.New("resources/link.gif", g),
-		speed:     200,
 	}
 	if startTile := w.FindTileKind(world.PlayerStart); startTile != nil {
 		tRect := startTile.Bounds()
-		player.spr.X = float32(tRect.X)
-		player.spr.Y = float32(tRect.Y)
+		player.x = float32(tRect.X)
+		player.y = float32(tRect.Y)
 	}
 	return player
 }
@@ -39,32 +41,34 @@ func (p *Player) Stop(d world.Direction) {
 func (p *Player) Update(dt uint32, w *world.World) {
 	velocity := p.speed * float32(dt) / 1000
 	if p.direction&world.North > 0 {
-		p.spr.Y -= velocity
+		p.y -= velocity
 		w.CollideWithTiles(p, world.North)
 	}
 	if p.direction&world.East > 0 {
-		p.spr.X += velocity
+		p.x += velocity
 		w.CollideWithTiles(p, world.East)
 	}
 	if p.direction&world.South > 0 {
-		p.spr.Y += velocity
+		p.y += velocity
 		w.CollideWithTiles(p, world.South)
 	}
 	if p.direction&world.West > 0 {
-		p.spr.X -= velocity
+		p.x -= velocity
 		w.CollideWithTiles(p, world.West)
 	}
 }
 
 func (p *Player) Bounds() *sdl.Rect {
-	return &sdl.Rect{int32(p.spr.X), int32(p.spr.Y), int32(p.spr.W), int32(p.spr.H)}
+	return &sdl.Rect{int32(p.x), int32(p.y), int32(p.spr.W), int32(p.spr.H)}
 }
 
 func (p *Player) SetBounds(r *sdl.Rect) {
-	p.spr.X = float32(r.X)
-	p.spr.Y = float32(r.Y)
+	p.x = float32(r.X)
+	p.y = float32(r.Y)
 }
 
 func (p *Player) Draw() {
+	p.spr.X = p.x
+	p.spr.Y = p.y
 	p.spr.Draw()
 }

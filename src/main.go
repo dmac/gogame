@@ -69,6 +69,6 @@ func main() {
 
 		fps.Update()
 	}
-	renderer.Destroy()
+	g.Renderer.Destroy()
 	window.Destroy()
 }
