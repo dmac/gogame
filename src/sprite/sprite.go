@@ -8,29 +8,29 @@ import (
 )
 
 type Sprite struct {
-	X       int32
-	Y       int32
-	W       int32
-	H       int32
+	X       float32
+	Y       float32
+	W       float32
+	H       float32
 	texture *sdl.Texture
 	g       *graphics.Graphics
 }
 
 func New(filename string, graphics *graphics.Graphics) *Sprite {
-	surface := img.Load("resources/link.gif")
+	surface := img.Load(filename)
 	texture := graphics.Renderer.CreateTextureFromSurface(surface)
 	return &Sprite{
 		X:       100,
 		Y:       100,
-		W:       surface.W,
-		H:       surface.H,
+		W:       float32(surface.W),
+		H:       float32(surface.H),
 		texture: texture,
 		g:       graphics,
 	}
 }
 
 func (s *Sprite) Draw() {
-	src := sdl.Rect{0, 0, s.W, s.H}
-	dst := sdl.Rect{s.X, s.Y, s.W, s.H}
+	src := sdl.Rect{0, 0, int32(s.W), int32(s.H)}
+	dst := sdl.Rect{int32(s.X), int32(s.Y), int32(s.W), int32(s.H)}
 	s.g.Renderer.Copy(s.texture, &src, &dst)
 }

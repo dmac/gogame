@@ -17,7 +17,7 @@ const (
 type Player struct {
 	Direction Direction
 	s         *sprite.Sprite
-	speed     uint32 // pixels/s
+	speed     float32 // pixels/s
 }
 
 func NewPlayer(g *graphics.Graphics) *Player {
@@ -37,18 +37,18 @@ func (p *Player) Stop(d Direction) {
 }
 
 func (p *Player) Update(dt uint32) {
-	velocity := p.speed * dt / 1000
+	velocity := p.speed * float32(dt) / 1000
 	if p.Direction&North > 0 {
-		p.s.Y -= int32(velocity)
+		p.s.Y -= velocity
 	}
 	if p.Direction&East > 0 {
-		p.s.X += int32(velocity)
+		p.s.X += velocity
 	}
 	if p.Direction&South > 0 {
-		p.s.Y += int32(velocity)
+		p.s.Y += velocity
 	}
 	if p.Direction&West > 0 {
-		p.s.X -= int32(velocity)
+		p.s.X -= velocity
 	}
 }
 
