@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/veandco/go-sdl2/sdl"
 
-	"./entity"
-	"./fps"
-	"./graphics"
+	"entity"
+	"fps"
+	"graphics"
 )
 
 func main() {

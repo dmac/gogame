@@ -5,7 +5,7 @@ import (
 
 	"github.com/veandco/go-sdl2/sdl"
 
-	"../graphics"
+	"graphics"
 )
 
 var g *graphics.Graphics

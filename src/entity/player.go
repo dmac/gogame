@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"../graphics"
-	"../sprite"
+	"graphics"
+	"sprite"
 )
 
 type Direction byte
