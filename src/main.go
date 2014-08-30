@@ -1,6 +1,9 @@
 package main
 
 import (
+	"math/rand"
+	"time"
+
 	"github.com/veandco/go-sdl2/sdl"
 
 	"clock"
@@ -9,6 +12,8 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().Unix())
+
 	window := sdl.CreateWindow("gogame", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		800, 600, sdl.WINDOW_SHOWN)
 	renderer := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)

@@ -2,6 +2,8 @@ package game
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
 
 	"github.com/veandco/go-sdl2/sdl"
 
@@ -16,6 +18,7 @@ type Moblin struct {
 	health    int32
 	maxHealth int32
 	direction Direction
+	goal      *tile
 	spr       *sprite.Sprite
 }
 
@@ -24,12 +27,42 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 		health:    100,
 		maxHealth: 100,
 		speed:     50,
-		direction: South,
 		spr:       sprite.New("resources/moblin.gif", g),
 	}
 }
 
+func (m *Moblin) DirectionToGoal(w *World) Direction {
+	if m.goal == nil {
+		return 0
+	}
+	gRect := m.goal.Bounds()
+	xDist := int32(m.x) - gRect.X
+	yDist := int32(m.y) - gRect.Y
+	xAxis := true
+	if math.Abs(float64(yDist)) > math.Abs(float64(xDist)) {
+		xAxis = false
+	}
+
+	switch {
+	case xAxis && xDist < 0:
+		return East
+	case xAxis && xDist > 0:
+		return West
+	case !xAxis && yDist < 0:
+		return South
+	case !xAxis && yDist > 0:
+		return North
+	default:
+		// Goal reached, so create a random new one.
+		newRow := m.goal.row + rand.Int31n(10) - 5
+		newCol := m.goal.col + rand.Int31n(10) - 5
+		m.goal = w.TileAt(newRow, newCol)
+		return m.DirectionToGoal(w)
+	}
+}
+
 func (m *Moblin) Update(dt uint32, w *World) {
+	m.direction = m.DirectionToGoal(w)
 	velocity := m.speed * float32(dt) / 1000
 	if m.direction&North > 0 {
 		m.y -= velocity

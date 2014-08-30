@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 
 	"github.com/veandco/go-sdl2/sdl"
@@ -112,6 +113,9 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 		tRect := moblinStartTile.Bounds()
 		moblin.x = float32(tRect.X)
 		moblin.y = float32(tRect.Y)
+		moblin.goal = world.TileAt(
+			moblinStartTile.row+rand.Int31n(10)-5,
+			moblinStartTile.col+rand.Int31n(10)-5)
 	}
 
 	world.Player = player
@@ -154,6 +158,21 @@ func (w *World) FindTileKind(tk tileKind) *tile {
 		}
 	}
 	return nil
+}
+
+func (w *World) TileAt(row int32, col int32) *tile {
+	// First, search for a tile
+	for _, tile := range w.tiles {
+		if tile.row == row && tile.col == col {
+			return &tile
+		}
+	}
+
+	// If not found, create a new "Empty" tile and return it.
+	return &tile{
+		row: row,
+		col: col,
+	}
 }
 
 func (w *World) Update(dt uint32) {
