@@ -3,10 +3,9 @@ package main
 import (
 	"github.com/veandco/go-sdl2/sdl"
 
-	"entity"
 	"fps"
+	"game"
 	"graphics"
-	w "world"
 )
 
 func main() {
@@ -18,10 +17,10 @@ func main() {
 	g := graphics.New(renderer)
 	fps.Init(60, g)
 
-	world := w.LoadWorld("resources/worlds/basic.txt", g)
-	player := entity.NewPlayer(g, world)
-	moblin := entity.NewMoblin(g, world)
-	sword := entity.NewSword(g)
+	world := game.LoadWorld("resources/worlds/basic.txt", g)
+	player := game.NewPlayer(g, world)
+	moblin := game.NewMoblin(g, world)
+	sword := game.NewSword(g)
 
 	player.SetActiveItem(sword)
 
@@ -36,26 +35,26 @@ func main() {
 				case sdl.K_ESCAPE:
 					running = false
 				case sdl.K_w:
-					player.Move(w.North)
+					player.Move(game.North)
 				case sdl.K_d:
-					player.Move(w.East)
+					player.Move(game.East)
 				case sdl.K_s:
-					player.Move(w.South)
+					player.Move(game.South)
 				case sdl.K_a:
-					player.Move(w.West)
+					player.Move(game.West)
 				case sdl.K_SPACE:
 					player.SetActiveItemState(true)
 				}
 			case *sdl.KeyUpEvent:
 				switch event.Keysym.Sym {
 				case sdl.K_w:
-					player.Stop(w.North)
+					player.Stop(game.North)
 				case sdl.K_d:
-					player.Stop(w.East)
+					player.Stop(game.East)
 				case sdl.K_s:
-					player.Stop(w.South)
+					player.Stop(game.South)
 				case sdl.K_a:
-					player.Stop(w.West)
+					player.Stop(game.West)
 				case sdl.K_SPACE:
 					player.SetActiveItemState(false)
 				}

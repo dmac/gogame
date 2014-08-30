@@ -1,15 +1,14 @@
-package entity
+package game
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
 	"sprite"
-	"world"
 )
 
 type Item interface {
-	world.Bounded
+	Bounded
 
 	Activate()
 	Deactivate()
@@ -20,20 +19,20 @@ type Player struct {
 	x         float32
 	y         float32
 	speed     float32 // pixels/s
-	direction world.Direction
+	direction Direction
 
 	activeItem Item
 
 	spr *sprite.Sprite
 }
 
-func NewPlayer(g *graphics.Graphics, w *world.World) *Player {
+func NewPlayer(g *graphics.Graphics, w *World) *Player {
 	player := &Player{
 		speed:     200,
 		direction: 0,
 		spr:       sprite.New("resources/link.gif", g),
 	}
-	if startTile := w.FindTileKind(world.PlayerStart); startTile != nil {
+	if startTile := w.FindTileKind(PlayerStart); startTile != nil {
 		tRect := startTile.Bounds()
 		player.x = float32(tRect.X)
 		player.y = float32(tRect.Y)
@@ -41,31 +40,31 @@ func NewPlayer(g *graphics.Graphics, w *world.World) *Player {
 	return player
 }
 
-func (p *Player) Move(d world.Direction) {
+func (p *Player) Move(d Direction) {
 	p.direction |= d
 }
 
-func (p *Player) Stop(d world.Direction) {
+func (p *Player) Stop(d Direction) {
 	p.direction &^= d
 }
 
-func (p *Player) Update(dt uint32, w *world.World) {
+func (p *Player) Update(dt uint32, w *World) {
 	velocity := p.speed * float32(dt) / 1000
-	if p.direction&world.North > 0 {
+	if p.direction&North > 0 {
 		p.y -= velocity
-		w.CollideWithTiles(p, world.North)
+		w.CollideWithTiles(p, North)
 	}
-	if p.direction&world.East > 0 {
+	if p.direction&East > 0 {
 		p.x += velocity
-		w.CollideWithTiles(p, world.East)
+		w.CollideWithTiles(p, East)
 	}
-	if p.direction&world.South > 0 {
+	if p.direction&South > 0 {
 		p.y += velocity
-		w.CollideWithTiles(p, world.South)
+		w.CollideWithTiles(p, South)
 	}
-	if p.direction&world.West > 0 {
+	if p.direction&West > 0 {
 		p.x -= velocity
-		w.CollideWithTiles(p, world.West)
+		w.CollideWithTiles(p, West)
 	}
 }
 

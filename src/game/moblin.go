@@ -1,28 +1,27 @@
-package entity
+package game
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
 	"sprite"
-	"world"
 )
 
 type Moblin struct {
 	x         float32
 	y         float32
 	speed     float32 // pixels/s
-	direction world.Direction
+	direction Direction
 	spr       *sprite.Sprite
 }
 
-func NewMoblin(g *graphics.Graphics, w *world.World) *Moblin {
+func NewMoblin(g *graphics.Graphics, w *World) *Moblin {
 	moblin := &Moblin{
 		speed:     50,
-		direction: world.South,
+		direction: South,
 		spr:       sprite.New("resources/moblin.gif", g),
 	}
-	if startTile := w.FindTileKind(world.MoblinStart); startTile != nil {
+	if startTile := w.FindTileKind(MoblinStart); startTile != nil {
 		tRect := startTile.Bounds()
 		moblin.x = float32(tRect.X)
 		moblin.y = float32(tRect.Y)
@@ -30,23 +29,23 @@ func NewMoblin(g *graphics.Graphics, w *world.World) *Moblin {
 	return moblin
 }
 
-func (m *Moblin) Update(dt uint32, w *world.World) {
+func (m *Moblin) Update(dt uint32, w *World) {
 	velocity := m.speed * float32(dt) / 1000
-	if m.direction&world.North > 0 {
+	if m.direction&North > 0 {
 		m.y -= velocity
-		w.CollideWithTiles(m, world.North)
+		w.CollideWithTiles(m, North)
 	}
-	if m.direction&world.East > 0 {
+	if m.direction&East > 0 {
 		m.x += velocity
-		w.CollideWithTiles(m, world.East)
+		w.CollideWithTiles(m, East)
 	}
-	if m.direction&world.South > 0 {
+	if m.direction&South > 0 {
 		m.y += velocity
-		w.CollideWithTiles(m, world.South)
+		w.CollideWithTiles(m, South)
 	}
-	if m.direction&world.West > 0 {
+	if m.direction&West > 0 {
 		m.x -= velocity
-		w.CollideWithTiles(m, world.West)
+		w.CollideWithTiles(m, West)
 	}
 }
 
