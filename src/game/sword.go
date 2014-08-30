@@ -11,12 +11,14 @@ type Sword struct {
 	x      float32
 	y      float32
 	active bool
+	damage int32
 	spr    *sprite.Sprite
 }
 
 func NewSword(g *graphics.Graphics) *Sword {
 	return &Sword{
-		spr: sprite.New("resources/sword.gif", g),
+		damage: 10,
+		spr:    sprite.New("resources/sword.gif", g),
 	}
 }
 
@@ -26,6 +28,17 @@ func (s *Sword) Activate() {
 
 func (s *Sword) Deactivate() {
 	s.active = false
+}
+
+func (s *Sword) Update(dt uint32, w *World) {
+	if w.Moblin == nil {
+		return
+	}
+	sRect := s.Bounds()
+	mRect := w.Moblin.Bounds()
+	if s.active && sRect.HasIntersection(mRect) {
+		w.Moblin.ChangeHealth(-1 * s.damage)
+	}
 }
 
 func (s *Sword) Draw() {

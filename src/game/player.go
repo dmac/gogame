@@ -12,6 +12,7 @@ type Item interface {
 
 	Activate()
 	Deactivate()
+	Update(dt uint32, w *World)
 	Draw()
 }
 
@@ -60,6 +61,7 @@ func (p *Player) Update(dt uint32, w *World) {
 		p.x -= velocity
 		w.CollideWithTiles(p, West)
 	}
+	p.activeItem.Update(dt, w)
 }
 
 func (p *Player) SetActiveItem(item Item) {

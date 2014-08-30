@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
@@ -11,12 +13,16 @@ type Moblin struct {
 	x         float32
 	y         float32
 	speed     float32 // pixels/s
+	health    int32
+	maxHealth int32
 	direction Direction
 	spr       *sprite.Sprite
 }
 
 func NewMoblin(g *graphics.Graphics) *Moblin {
 	return &Moblin{
+		health:    100,
+		maxHealth: 100,
 		speed:     50,
 		direction: South,
 		spr:       sprite.New("resources/moblin.gif", g),
@@ -24,6 +30,10 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 }
 
 func (m *Moblin) Update(dt uint32, w *World) {
+	if m.health <= 0 {
+		w.Moblin = nil
+	}
+
 	velocity := m.speed * float32(dt) / 1000
 	if m.direction&North > 0 {
 		m.y -= velocity
@@ -41,6 +51,11 @@ func (m *Moblin) Update(dt uint32, w *World) {
 		m.x -= velocity
 		w.CollideWithTiles(m, West)
 	}
+}
+
+func (m *Moblin) ChangeHealth(amount int32) {
+	m.health += amount
+	fmt.Printf("Moblin Health: %d/%d\n", m.health, m.maxHealth)
 }
 
 func (m *Moblin) Bounds() *sdl.Rect {

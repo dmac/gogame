@@ -158,12 +158,16 @@ func (w *World) FindTileKind(tk tileKind) *tile {
 
 func (w *World) Update(dt uint32) {
 	w.Player.Update(dt, w)
-	w.Moblin.Update(dt, w)
+	if w.Moblin != nil {
+		w.Moblin.Update(dt, w)
+	}
 }
 
 func (w *World) Draw() {
 	w.Player.Draw()
-	w.Moblin.Draw()
+	if w.Moblin != nil {
+		w.Moblin.Draw()
+	}
 	for _, tile := range w.tiles {
 		tile.Draw()
 	}
