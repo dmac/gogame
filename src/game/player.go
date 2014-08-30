@@ -26,18 +26,12 @@ type Player struct {
 	spr *sprite.Sprite
 }
 
-func NewPlayer(g *graphics.Graphics, w *World) *Player {
-	player := &Player{
+func NewPlayer(g *graphics.Graphics) *Player {
+	return &Player{
 		speed:     200,
 		direction: 0,
 		spr:       sprite.New("resources/link.gif", g),
 	}
-	if startTile := w.FindTileKind(PlayerStart); startTile != nil {
-		tRect := startTile.Bounds()
-		player.x = float32(tRect.X)
-		player.y = float32(tRect.Y)
-	}
-	return player
 }
 
 func (p *Player) Move(d Direction) {

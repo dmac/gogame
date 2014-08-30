@@ -15,18 +15,12 @@ type Moblin struct {
 	spr       *sprite.Sprite
 }
 
-func NewMoblin(g *graphics.Graphics, w *World) *Moblin {
-	moblin := &Moblin{
+func NewMoblin(g *graphics.Graphics) *Moblin {
+	return &Moblin{
 		speed:     50,
 		direction: South,
 		spr:       sprite.New("resources/moblin.gif", g),
 	}
-	if startTile := w.FindTileKind(MoblinStart); startTile != nil {
-		tRect := startTile.Bounds()
-		moblin.x = float32(tRect.X)
-		moblin.y = float32(tRect.Y)
-	}
-	return moblin
 }
 
 func (m *Moblin) Update(dt uint32, w *World) {

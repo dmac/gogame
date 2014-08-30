@@ -40,7 +40,9 @@ type tile struct {
 }
 
 type World struct {
-	tiles []tile
+	Player *Player
+	Moblin *Moblin
+	tiles  []tile
 }
 
 var wallSprite *sprite.Sprite
@@ -96,9 +98,25 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 		line, isPrefix, err = r.ReadLine()
 	}
 
-	return &World{
-		tiles: tiles,
+	world := &World{tiles: tiles}
+
+	player := NewPlayer(g)
+	if playerStartTile := world.FindTileKind(PlayerStart); playerStartTile != nil {
+		bounds := playerStartTile.Bounds()
+		player.x = float32(bounds.X)
+		player.y = float32(bounds.Y)
 	}
+
+	moblin := NewMoblin(g)
+	if moblinStartTile := world.FindTileKind(MoblinStart); moblinStartTile != nil {
+		tRect := moblinStartTile.Bounds()
+		moblin.x = float32(tRect.X)
+		moblin.y = float32(tRect.Y)
+	}
+
+	world.Player = player
+	world.Moblin = moblin
+	return world
 }
 
 func (w *World) CollideWithTiles(b Bounded, d Direction) {
@@ -138,7 +156,14 @@ func (w *World) FindTileKind(tk tileKind) *tile {
 	return nil
 }
 
+func (w *World) Update(dt uint32) {
+	w.Player.Update(dt, w)
+	w.Moblin.Update(dt, w)
+}
+
 func (w *World) Draw() {
+	w.Player.Draw()
+	w.Moblin.Draw()
 	for _, tile := range w.tiles {
 		tile.Draw()
 	}

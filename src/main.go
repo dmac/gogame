@@ -18,11 +18,9 @@ func main() {
 	fps.Init(60, g)
 
 	world := game.LoadWorld("resources/worlds/basic.txt", g)
-	player := game.NewPlayer(g, world)
-	moblin := game.NewMoblin(g, world)
-	sword := game.NewSword(g)
 
-	player.SetActiveItem(sword)
+	sword := game.NewSword(g)
+	world.Player.SetActiveItem(sword)
 
 	running := true
 	for running {
@@ -35,40 +33,37 @@ func main() {
 				case sdl.K_ESCAPE:
 					running = false
 				case sdl.K_w:
-					player.Move(game.North)
+					world.Player.Move(game.North)
 				case sdl.K_d:
-					player.Move(game.East)
+					world.Player.Move(game.East)
 				case sdl.K_s:
-					player.Move(game.South)
+					world.Player.Move(game.South)
 				case sdl.K_a:
-					player.Move(game.West)
+					world.Player.Move(game.West)
 				case sdl.K_SPACE:
-					player.SetActiveItemState(true)
+					world.Player.SetActiveItemState(true)
 				}
 			case *sdl.KeyUpEvent:
 				switch event.Keysym.Sym {
 				case sdl.K_w:
-					player.Stop(game.North)
+					world.Player.Stop(game.North)
 				case sdl.K_d:
-					player.Stop(game.East)
+					world.Player.Stop(game.East)
 				case sdl.K_s:
-					player.Stop(game.South)
+					world.Player.Stop(game.South)
 				case sdl.K_a:
-					player.Stop(game.West)
+					world.Player.Stop(game.West)
 				case sdl.K_SPACE:
-					player.SetActiveItemState(false)
+					world.Player.SetActiveItemState(false)
 				}
 			}
 
 		}
 
 		dt := fps.Dt()
-		player.Update(dt, world)
-		moblin.Update(dt, world)
+		world.Update(dt)
 
 		g.Renderer.Clear()
-		player.Draw()
-		moblin.Draw()
 		world.Draw()
 		fps.DisplayFPS()
 		g.Renderer.Present()
