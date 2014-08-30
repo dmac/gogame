@@ -29,9 +29,10 @@ type Bounded interface {
 
 type tileKind struct{ v byte }
 
-var Wall tileKind = tileKind{v: 0}
-var PlayerStart tileKind = tileKind{v: 1}
-var MoblinStart tileKind = tileKind{v: 2}
+var Empty tileKind = tileKind{v: 0}
+var Wall tileKind = tileKind{v: 1}
+var PlayerStart tileKind = tileKind{v: 2}
+var MoblinStart tileKind = tileKind{v: 3}
 
 type tile struct {
 	row  int32
@@ -123,11 +124,16 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 	return world
 }
 
-func (w *World) CollideWithTiles(b Bounded, d Direction) {
+func (w *World) CollideWithTiles(b Bounded, d Direction) bool {
+	collided := false
 	for _, t := range w.tiles {
+		if t.IsPassable() {
+			continue
+		}
 		bRect := b.Bounds()
 		tRect := t.Bounds()
 		if bRect.HasIntersection(tRect) {
+			collided = true
 			switch d {
 			case North:
 				for bRect.Y < tRect.Y+tRect.H {
@@ -149,6 +155,7 @@ func (w *World) CollideWithTiles(b Bounded, d Direction) {
 			b.SetBounds(bRect)
 		}
 	}
+	return collided
 }
 
 func (w *World) FindTileKind(tk tileKind) *tile {
@@ -200,6 +207,15 @@ func (w *World) Draw() {
 	}
 	for _, tile := range w.tiles {
 		tile.Draw()
+	}
+}
+
+func (t *tile) IsPassable() bool {
+	switch t.kind {
+	case Wall:
+		return false
+	default:
+		return true
 	}
 }
 

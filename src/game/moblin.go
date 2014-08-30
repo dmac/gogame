@@ -31,6 +31,12 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 	}
 }
 
+func (m *Moblin) RandomGoal(w *World) *tile {
+	newRow := m.goal.row + rand.Int31n(10) - 5
+	newCol := m.goal.col + rand.Int31n(10) - 50
+	return w.TileAt(newRow, newCol)
+}
+
 func (m *Moblin) DirectionToGoal(w *World) Direction {
 	if m.goal == nil {
 		return 0
@@ -53,10 +59,8 @@ func (m *Moblin) DirectionToGoal(w *World) Direction {
 	case !xAxis && yDist > 0:
 		return North
 	default:
-		// Goal reached, so create a random new one.
-		newRow := m.goal.row + rand.Int31n(10) - 5
-		newCol := m.goal.col + rand.Int31n(10) - 5
-		m.goal = w.TileAt(newRow, newCol)
+		// Goal reached, so create a new one.
+		m.goal = m.RandomGoal(w)
 		return m.DirectionToGoal(w)
 	}
 }
@@ -64,21 +68,26 @@ func (m *Moblin) DirectionToGoal(w *World) Direction {
 func (m *Moblin) Update(dt uint32, w *World) {
 	m.direction = m.DirectionToGoal(w)
 	velocity := m.speed * float32(dt) / 1000
+	collided := false
 	if m.direction&North > 0 {
 		m.y -= velocity
-		w.CollideWithTiles(m, North)
+		collided = collided || w.CollideWithTiles(m, North)
 	}
 	if m.direction&East > 0 {
 		m.x += velocity
-		w.CollideWithTiles(m, East)
+		collided = collided || w.CollideWithTiles(m, East)
 	}
 	if m.direction&South > 0 {
 		m.y += velocity
-		w.CollideWithTiles(m, South)
+		collided = collided || w.CollideWithTiles(m, South)
 	}
 	if m.direction&West > 0 {
 		m.x -= velocity
-		w.CollideWithTiles(m, West)
+		collided = collided || w.CollideWithTiles(m, West)
+	}
+	if collided {
+		// TODO: Debug why moblin still sticks to walls even after this
+		m.goal = m.RandomGoal(w)
 	}
 }
 
