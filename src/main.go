@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/veandco/go-sdl2/sdl"
 
-	"fps"
+	"clock"
 	"game"
 	"graphics"
 )
@@ -15,7 +15,7 @@ func main() {
 	renderer.SetDrawColor(50, 50, 50, 255)
 
 	g := graphics.New(renderer)
-	fps.Init(60, g)
+	clock.Init(60, g)
 
 	world := game.LoadWorld("resources/worlds/basic.txt", g)
 
@@ -60,15 +60,15 @@ func main() {
 
 		}
 
-		dt := fps.Dt()
+		dt := clock.Dt()
 		world.Update(dt)
 
 		g.Renderer.Clear()
 		world.Draw()
-		fps.DisplayFPS()
+		clock.DisplayFPS()
 		g.Renderer.Present()
 
-		fps.Update()
+		clock.Update()
 	}
 	g.Renderer.Destroy()
 	window.Destroy()
