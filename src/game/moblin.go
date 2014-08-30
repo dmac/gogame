@@ -30,10 +30,6 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 }
 
 func (m *Moblin) Update(dt uint32, w *World) {
-	if m.health <= 0 {
-		w.Moblin = nil
-	}
-
 	velocity := m.speed * float32(dt) / 1000
 	if m.direction&North > 0 {
 		m.y -= velocity

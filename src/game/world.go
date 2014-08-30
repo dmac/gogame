@@ -40,9 +40,9 @@ type tile struct {
 }
 
 type World struct {
-	Player *Player
-	Moblin *Moblin
-	tiles  []tile
+	Player  *Player
+	Enemies []*Moblin
+	tiles   []tile
 }
 
 var wallSprite *sprite.Sprite
@@ -115,7 +115,7 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 	}
 
 	world.Player = player
-	world.Moblin = moblin
+	world.Enemies = []*Moblin{moblin}
 	return world
 }
 
@@ -158,15 +158,26 @@ func (w *World) FindTileKind(tk tileKind) *tile {
 
 func (w *World) Update(dt uint32) {
 	w.Player.Update(dt, w)
-	if w.Moblin != nil {
-		w.Moblin.Update(dt, w)
+	for _, enemy := range w.Enemies {
+		enemy.Update(dt, w)
+	}
+	i := 0
+	// Remove dead enemies, drop loot
+	for i < len(w.Enemies) {
+		if w.Enemies[i].health <= 0 {
+			// Swap/remove
+			w.Enemies[i] = w.Enemies[len(w.Enemies)-1]
+			w.Enemies = w.Enemies[:len(w.Enemies)-1]
+		} else {
+			i += 1
+		}
 	}
 }
 
 func (w *World) Draw() {
 	w.Player.Draw()
-	if w.Moblin != nil {
-		w.Moblin.Draw()
+	for _, enemy := range w.Enemies {
+		enemy.Draw()
 	}
 	for _, tile := range w.tiles {
 		tile.Draw()
