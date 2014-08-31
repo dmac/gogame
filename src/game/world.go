@@ -192,9 +192,7 @@ func (w *World) Update(dt uint32) {
 	i := 0
 	for i < len(w.Enemies) {
 		if w.Enemies[i].health <= 0 {
-			// Swap/remove
-			w.Enemies[i] = w.Enemies[len(w.Enemies)-1]
-			w.Enemies = w.Enemies[:len(w.Enemies)-1]
+			w.Enemies[i], w.Enemies = w.Enemies[len(w.Enemies)-1], w.Enemies[:len(w.Enemies)-1]
 		} else {
 			i += 1
 		}
