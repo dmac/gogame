@@ -42,8 +42,8 @@ type tile struct {
 }
 
 type World struct {
-	Player  *Player
-	Enemies []*Moblin
+	Player  Player
+	Enemies []Moblin
 	tiles   []tile
 }
 
@@ -58,8 +58,9 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 	}
 	defer f.Close()
 
+	player := NewPlayer(g)
+	enemies := make([]Moblin, 0)
 	tiles := make([]tile, 0)
-	enemies := make([]*Moblin, 0)
 
 	r := bufio.NewReader(f)
 	line, isPrefix, err := r.ReadLine()
@@ -87,6 +88,11 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 					kind: PlayerStart,
 				}
 				tiles = append(tiles, newTile)
+
+				bounds := newTile.Bounds()
+				player.x = float32(bounds.X)
+				player.y = float32(bounds.Y)
+
 			case 'm':
 				newTile := tile{
 					row:  int32(row),
@@ -96,14 +102,14 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 				tiles = append(tiles, newTile)
 
 				moblin := NewMoblin(g)
-				tRect := newTile.Bounds()
-				moblin.x = float32(tRect.X)
-				moblin.y = float32(tRect.Y)
+				bounds := newTile.Bounds()
+				moblin.x = float32(bounds.X)
+				moblin.y = float32(bounds.Y)
 				moblin.goal = &tile{
 					row: newTile.row + rand.Int31n(10) - 5,
 					col: newTile.col + rand.Int31n(10) - 5,
 				}
-				enemies = append(enemies, moblin)
+				enemies = append(enemies, *moblin)
 			}
 		}
 
@@ -111,18 +117,11 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 		line, isPrefix, err = r.ReadLine()
 	}
 
-	world := &World{tiles: tiles}
-
-	player := NewPlayer(g)
-	if playerStartTile := world.FindTileKind(PlayerStart); playerStartTile != nil {
-		bounds := playerStartTile.Bounds()
-		player.x = float32(bounds.X)
-		player.y = float32(bounds.Y)
+	return &World{
+		Player:  *player,
+		Enemies: enemies,
+		tiles:   tiles,
 	}
-
-	world.Player = player
-	world.Enemies = enemies
-	return world
 }
 
 func (w *World) CollideWithTiles(b Bounded, d Direction) bool {
@@ -185,8 +184,8 @@ func (w *World) TileAt(row int32, col int32) *tile {
 
 func (w *World) Update(dt uint32) {
 	w.Player.Update(dt, w)
-	for _, enemy := range w.Enemies {
-		enemy.Update(dt, w)
+	for i := 0; i < len(w.Enemies); i++ {
+		w.Enemies[i].Update(dt, w)
 	}
 	i := 0
 	// Remove dead enemies, drop loot

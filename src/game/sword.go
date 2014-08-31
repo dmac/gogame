@@ -31,11 +31,11 @@ func (s *Sword) Deactivate() {
 }
 
 func (s *Sword) Update(dt uint32, w *World) {
-	for _, enemy := range w.Enemies {
+	for i := 0; i < len(w.Enemies); i++ {
 		sRect := s.Bounds()
-		eRect := enemy.Bounds()
+		eRect := w.Enemies[i].Bounds()
 		if s.active && sRect.HasIntersection(eRect) {
-			enemy.ChangeHealth(-1 * s.damage)
+			w.Enemies[i].ChangeHealth(-1 * s.damage)
 		}
 	}
 }
