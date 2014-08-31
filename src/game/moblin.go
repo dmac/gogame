@@ -97,7 +97,6 @@ func (m *Moblin) Update(dt uint32, w *World) {
 	if collided {
 		m.goal = m.RandomGoal(w)
 	}
-	fmt.Println(m.goal)
 }
 
 func (m *Moblin) ChangeHealth(amount int32) {

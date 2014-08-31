@@ -59,6 +59,7 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 	defer f.Close()
 
 	tiles := make([]tile, 0)
+	enemies := make([]*Moblin, 0)
 
 	r := bufio.NewReader(f)
 	line, isPrefix, err := r.ReadLine()
@@ -93,6 +94,16 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 					kind: MoblinStart,
 				}
 				tiles = append(tiles, newTile)
+
+				moblin := NewMoblin(g)
+				tRect := newTile.Bounds()
+				moblin.x = float32(tRect.X)
+				moblin.y = float32(tRect.Y)
+				moblin.goal = &tile{
+					row: newTile.row + rand.Int31n(10) - 5,
+					col: newTile.col + rand.Int31n(10) - 5,
+				}
+				enemies = append(enemies, moblin)
 			}
 		}
 
@@ -109,18 +120,8 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 		player.y = float32(bounds.Y)
 	}
 
-	moblin := NewMoblin(g)
-	if moblinStartTile := world.FindTileKind(MoblinStart); moblinStartTile != nil {
-		tRect := moblinStartTile.Bounds()
-		moblin.x = float32(tRect.X)
-		moblin.y = float32(tRect.Y)
-		moblin.goal = world.TileAt(
-			moblinStartTile.row+rand.Int31n(10)-5,
-			moblinStartTile.col+rand.Int31n(10)-5)
-	}
-
 	world.Player = player
-	world.Enemies = []*Moblin{moblin}
+	world.Enemies = enemies
 	return world
 }
 
