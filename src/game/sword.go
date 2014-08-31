@@ -31,7 +31,7 @@ func (s *Sword) Deactivate() {
 }
 
 func (s *Sword) Update(dt uint32, w *World) {
-	for i := 0; i < len(w.Enemies); i++ {
+	for i := range w.Enemies {
 		sRect := s.Bounds()
 		eRect := w.Enemies[i].Bounds()
 		if s.active && sRect.HasIntersection(eRect) {

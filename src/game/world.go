@@ -184,11 +184,12 @@ func (w *World) TileAt(row int32, col int32) *tile {
 
 func (w *World) Update(dt uint32) {
 	w.Player.Update(dt, w)
-	for i := 0; i < len(w.Enemies); i++ {
+	for i := range w.Enemies {
 		w.Enemies[i].Update(dt, w)
 	}
-	i := 0
+
 	// Remove dead enemies, drop loot
+	i := 0
 	for i < len(w.Enemies) {
 		if w.Enemies[i].health <= 0 {
 			// Swap/remove
