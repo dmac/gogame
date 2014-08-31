@@ -45,22 +45,21 @@ func (p *Player) Stop(d Direction) {
 
 func (p *Player) Update(dt uint32, w *World) {
 	velocity := p.speed * float32(dt) / 1000
-	collided := false
 	if p.direction&North > 0 {
 		p.y -= velocity
-		collided = collided || w.CollideWithTiles(p, North)
+		w.CollideWithTiles(p, North)
 	}
 	if p.direction&East > 0 {
 		p.x += velocity
-		collided = collided || w.CollideWithTiles(p, East)
+		w.CollideWithTiles(p, East)
 	}
 	if p.direction&South > 0 {
 		p.y += velocity
-		collided = collided || w.CollideWithTiles(p, South)
+		w.CollideWithTiles(p, South)
 	}
 	if p.direction&West > 0 {
 		p.x -= velocity
-		collided = collided || w.CollideWithTiles(p, West)
+		w.CollideWithTiles(p, West)
 	}
 	p.activeItem.Update(dt, w)
 }

@@ -31,9 +31,10 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 	}
 }
 
+// TODO: Goal should be generated from current position, not current goal.
 func (m *Moblin) RandomGoal(w *World) *tile {
 	newRow := m.goal.row + rand.Int31n(10) - 5
-	newCol := m.goal.col + rand.Int31n(10) - 50
+	newCol := m.goal.col + rand.Int31n(10) - 5
 	return w.TileAt(newRow, newCol)
 }
 
@@ -71,24 +72,32 @@ func (m *Moblin) Update(dt uint32, w *World) {
 	collided := false
 	if m.direction&North > 0 {
 		m.y -= velocity
-		collided = collided || w.CollideWithTiles(m, North)
+		if w.CollideWithTiles(m, North) {
+			collided = true
+		}
 	}
 	if m.direction&East > 0 {
 		m.x += velocity
-		collided = collided || w.CollideWithTiles(m, East)
+		if w.CollideWithTiles(m, East) {
+			collided = true
+		}
 	}
 	if m.direction&South > 0 {
 		m.y += velocity
-		collided = collided || w.CollideWithTiles(m, South)
+		if w.CollideWithTiles(m, South) {
+			collided = true
+		}
 	}
 	if m.direction&West > 0 {
 		m.x -= velocity
-		collided = collided || w.CollideWithTiles(m, West)
+		if w.CollideWithTiles(m, West) {
+			collided = true
+		}
 	}
 	if collided {
-		// TODO: Debug why moblin still sticks to walls even after this
 		m.goal = m.RandomGoal(w)
 	}
+	fmt.Println(m.goal)
 }
 
 func (m *Moblin) ChangeHealth(amount int32) {
