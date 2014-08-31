@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 
@@ -101,7 +100,6 @@ func (m *Moblin) Update(dt uint32, w *World) {
 
 func (m *Moblin) ChangeHealth(amount int32) {
 	m.health += amount
-	fmt.Printf("Moblin Health: %d/%d\n", m.health, m.maxHealth)
 }
 
 func (m *Moblin) Bounds() *sdl.Rect {
