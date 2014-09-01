@@ -9,7 +9,7 @@ import (
 	"graphics"
 )
 
-type Moblin struct {
+type Slime struct {
 	x         float32
 	y         float32
 	speed     float32 // pixels/s
@@ -20,8 +20,8 @@ type Moblin struct {
 	spr       *graphics.Sprite
 }
 
-func NewMoblin(g *graphics.Graphics) *Moblin {
-	return &Moblin{
+func NewSlime(g *graphics.Graphics) *Slime {
+	return &Slime{
 		health:    100,
 		maxHealth: 100,
 		speed:     50,
@@ -30,13 +30,13 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 }
 
 // TODO: Goal should be generated from current position, not current goal.
-func (m *Moblin) RandomGoal(w *World) *tile {
+func (m *Slime) RandomGoal(w *World) *tile {
 	newRow := m.goal.row + rand.Int31n(10) - 5
 	newCol := m.goal.col + rand.Int31n(10) - 5
 	return w.TileAt(newRow, newCol)
 }
 
-func (m *Moblin) DirectionToGoal(w *World) Direction {
+func (m *Slime) DirectionToGoal(w *World) Direction {
 	if m.goal == nil {
 		return 0
 	}
@@ -64,7 +64,7 @@ func (m *Moblin) DirectionToGoal(w *World) Direction {
 	}
 }
 
-func (m *Moblin) Update(dt uint32, w *World) {
+func (m *Slime) Update(dt uint32, w *World) {
 	m.direction = m.DirectionToGoal(w)
 	velocity := m.speed * float32(dt) / 1000
 	collided := false
@@ -97,20 +97,20 @@ func (m *Moblin) Update(dt uint32, w *World) {
 	}
 }
 
-func (m *Moblin) ChangeHealth(amount int32) {
+func (m *Slime) ChangeHealth(amount int32) {
 	m.health += amount
 }
 
-func (m *Moblin) Bounds() *sdl.Rect {
+func (m *Slime) Bounds() *sdl.Rect {
 	return &sdl.Rect{int32(m.x), int32(m.y), int32(m.spr.W), int32(m.spr.H)}
 }
 
-func (m *Moblin) SetBounds(r *sdl.Rect) {
+func (m *Slime) SetBounds(r *sdl.Rect) {
 	m.x = float32(r.X)
 	m.y = float32(r.Y)
 }
 
-func (m *Moblin) Draw() {
+func (m *Slime) Draw() {
 	m.spr.X = m.x
 	m.spr.Y = m.y
 	m.spr.Draw()

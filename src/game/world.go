@@ -42,7 +42,7 @@ type tile struct {
 
 type World struct {
 	Player  Player
-	Enemies []Moblin
+	Enemies []Slime
 	tiles   []tile
 }
 
@@ -58,7 +58,7 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 	defer f.Close()
 
 	player := NewPlayer(g)
-	enemies := make([]Moblin, 0)
+	enemies := make([]Slime, 0)
 	tiles := make([]tile, 0)
 
 	r := bufio.NewReader(f)
@@ -100,15 +100,15 @@ func LoadWorld(filename string, g *graphics.Graphics) *World {
 				}
 				tiles = append(tiles, newTile)
 
-				moblin := NewMoblin(g)
+				slime := NewSlime(g)
 				bounds := newTile.Bounds()
-				moblin.x = float32(bounds.X)
-				moblin.y = float32(bounds.Y)
-				moblin.goal = &tile{
+				slime.x = float32(bounds.X)
+				slime.y = float32(bounds.Y)
+				slime.goal = &tile{
 					row: newTile.row + rand.Int31n(10) - 5,
 					col: newTile.col + rand.Int31n(10) - 5,
 				}
-				enemies = append(enemies, *moblin)
+				enemies = append(enemies, *slime)
 			}
 		}
 
