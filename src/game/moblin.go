@@ -7,7 +7,6 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
-	"sprite"
 )
 
 type Moblin struct {
@@ -18,7 +17,7 @@ type Moblin struct {
 	maxHealth int32
 	direction Direction
 	goal      *tile
-	spr       *sprite.Sprite
+	spr       *graphics.Sprite
 }
 
 func NewMoblin(g *graphics.Graphics) *Moblin {
@@ -26,7 +25,7 @@ func NewMoblin(g *graphics.Graphics) *Moblin {
 		health:    100,
 		maxHealth: 100,
 		speed:     50,
-		spr:       sprite.New("resources/moblin.gif", g),
+		spr:       graphics.NewSprite(1, 0, 1, 1, g),
 	}
 }
 

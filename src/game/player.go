@@ -4,7 +4,6 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
-	"sprite"
 )
 
 type Item interface {
@@ -24,14 +23,14 @@ type Player struct {
 
 	activeItem Item
 
-	spr *sprite.Sprite
+	spr *graphics.Sprite
 }
 
 func NewPlayer(g *graphics.Graphics) *Player {
 	return &Player{
 		speed:     200,
 		direction: 0,
-		spr:       sprite.New("resources/link.gif", g),
+		spr:       graphics.NewSprite(0, 0, 1, 1, g),
 	}
 }
 
@@ -90,6 +89,6 @@ func (p *Player) Draw() {
 	p.spr.Y = p.y
 	p.spr.Draw()
 
-	p.activeItem.SetBounds(&sdl.Rect{int32(p.x) + 15, int32(p.y) + 30, 0, 0})
+	p.activeItem.SetBounds(&sdl.Rect{int32(p.x) + 9, int32(p.y) + 25, 0, 0})
 	p.activeItem.Draw()
 }

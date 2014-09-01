@@ -19,7 +19,7 @@ func main() {
 	renderer := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	renderer.SetDrawColor(50, 50, 50, 255)
 
-	g := graphics.New(renderer)
+	g := graphics.New(renderer, "resources/Inconsolata-Regular.ttf", 24, "resources/spritesheet.png", 32)
 	clock.Init(60, g)
 
 	world := game.LoadWorld("resources/worlds/basic.txt", g)

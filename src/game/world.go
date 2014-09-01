@@ -10,7 +10,6 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
-	"sprite"
 )
 
 type Direction byte
@@ -38,7 +37,7 @@ type tile struct {
 	row  int32
 	col  int32
 	kind tileKind
-	spr  *sprite.Sprite
+	spr  *graphics.Sprite
 }
 
 type World struct {
@@ -47,10 +46,10 @@ type World struct {
 	tiles   []tile
 }
 
-var wallSprite *sprite.Sprite
+var wallSprite *graphics.Sprite
 
 func LoadWorld(filename string, g *graphics.Graphics) *World {
-	wallSprite = sprite.New("resources/block.gif", g)
+	wallSprite = graphics.NewSprite(3, 0, 1, 1, g)
 
 	f, err := os.Open(filename)
 	if err != nil {
@@ -222,8 +221,8 @@ func (t *tile) Draw() {
 	if t.spr == nil {
 		return
 	}
-	t.spr.X = float32(t.col) * t.spr.W
-	t.spr.Y = float32(t.row) * t.spr.H
+	t.spr.X = float32(uint(t.col) * t.spr.W)
+	t.spr.Y = float32(uint(t.row) * t.spr.H)
 	t.spr.Draw()
 }
 

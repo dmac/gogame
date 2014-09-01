@@ -6,20 +6,26 @@ import (
 )
 
 type Graphics struct {
-	font     *ttf.Font
 	Renderer *sdl.Renderer
+	font     *ttf.Font
+	ss       *spritesheet
 }
 
-func New(renderer *sdl.Renderer) *Graphics {
+func New(renderer *sdl.Renderer, fontFilename string, fontSize int,
+	spritesheetFilename string, spritesheetSize uint) *Graphics {
+
 	ttf.Init()
-	font, err := ttf.OpenFont("resources/Inconsolata-Regular.ttf", 24)
+	font, err := ttf.OpenFont(fontFilename, fontSize)
 	if err != nil {
 		panic("Unable to open font")
 	}
-	return &Graphics{
-		font:     font,
+	g := &Graphics{
 		Renderer: renderer,
+		font:     font,
 	}
+	spritesheet := newSpritesheet(spritesheetFilename, spritesheetSize, g)
+	g.ss = spritesheet
+	return g
 }
 
 func (g *Graphics) Print(s string) {

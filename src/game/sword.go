@@ -4,7 +4,6 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 
 	"graphics"
-	"sprite"
 )
 
 type Sword struct {
@@ -12,13 +11,13 @@ type Sword struct {
 	y      float32
 	active bool
 	damage int32
-	spr    *sprite.Sprite
+	spr    *graphics.Sprite
 }
 
 func NewSword(g *graphics.Graphics) *Sword {
 	return &Sword{
 		damage: 10,
-		spr:    sprite.New("resources/sword.gif", g),
+		spr:    graphics.NewSprite(2, 0, 1, 1, g),
 	}
 }
 
