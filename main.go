@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -20,23 +21,23 @@ func main() {
 	renderer.SetDrawColor(50, 50, 50, 255)
 
 	g := graphics.New(renderer, "resources/Inconsolata-Regular.ttf", 24, "resources/spritesheet.png", 32)
-	clock.Init(60, g)
 
 	world := game.LoadWorld("resources/worlds/basic.txt", g)
-
 	sword := game.NewSword(g)
 	world.Player.SetActiveItem(sword)
 
-	running := true
-	for running {
+	clock.Init(60)
+
+gameloop:
+	for {
 		for e := sdl.PollEvent(); e != nil; e = sdl.PollEvent() {
 			switch event := e.(type) {
 			case *sdl.QuitEvent:
-				running = false
+				break gameloop
 			case *sdl.KeyDownEvent:
 				switch event.Keysym.Sym {
 				case sdl.K_ESCAPE:
-					running = false
+					break gameloop
 				case sdl.K_w:
 					world.Player.Move(game.North)
 				case sdl.K_d:
@@ -70,7 +71,7 @@ func main() {
 
 		g.Renderer.Clear()
 		world.Draw()
-		clock.DisplayFPS()
+		g.Print(fmt.Sprintf("FPS:%d", clock.FPS()))
 		g.Renderer.Present()
 
 		clock.Update()

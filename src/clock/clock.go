@@ -1,25 +1,17 @@
 package clock
 
-import (
-	"fmt"
+import "github.com/veandco/go-sdl2/sdl"
 
-	"github.com/veandco/go-sdl2/sdl"
+var max uint32         // e.g., 60fps
+var fps uint32         // number of frames to display as current FPS
+var startTick uint32   // time at which the current frame started
+var lastSecTick uint32 // time of the last whole second
+var frameCount uint32  // number of frames that have passed since lastSecTick
+var dt uint32          // time at which Dt was last called
 
-	"graphics"
-)
-
-var g *graphics.Graphics
-var maxFPS uint32       // e.g., 60fps
-var startTick uint32    // time at which the current frame started
-var lastSecTick uint32  // time of the last whole second
-var frameCount uint32   // number of frames that have passed since lastSecTick
-var frameDisplay uint32 // number of frames to display as current FPS
-var dt uint32           // time at which Dt was last called
-
-func Init(max uint32, graphics *graphics.Graphics) {
+func Init(maxFPS uint32) {
 	tick := sdl.GetTicks()
-	g = graphics
-	maxFPS = max
+	max = maxFPS
 	startTick = tick
 	lastSecTick = tick
 	dt = tick
@@ -33,23 +25,23 @@ func Dt() uint32 {
 	return delta
 }
 
-// Update updates the currently computed FPS and locks to framerate to maxFPS
+// Update updates the currently computed FPS and locks to framerate to max
 func Update() {
 	frameCount += 1
 	if float64(startTick-lastSecTick)/1000 > 1 {
 		lastSecTick = startTick
-		frameDisplay = frameCount
+		fps = frameCount
 		frameCount = 0
 	}
 
-	delay := float32(1000/maxFPS) - float32(sdl.GetTicks()-startTick)
+	delay := float32(1000/max) - float32(sdl.GetTicks()-startTick)
 	if delay > 0 {
 		sdl.Delay(uint32(delay))
 	}
 	startTick = sdl.GetTicks()
 }
 
-// DisplayFPS prints the current FPS to the screen
-func DisplayFPS() {
-	g.Print(fmt.Sprintf("FPS:%d", frameDisplay))
+// FPS returns the currently calculated frames per second
+func FPS() uint32 {
+	return fps
 }
