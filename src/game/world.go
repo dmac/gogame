@@ -26,12 +26,12 @@ type Bounded interface {
 	SetBounds(*sdl.Rect)
 }
 
-type tileKind struct{ v byte }
+type tileKind struct{ byte }
 
-var Empty tileKind = tileKind{v: 0}
-var Wall tileKind = tileKind{v: 1}
-var PlayerStart tileKind = tileKind{v: 2}
-var MoblinStart tileKind = tileKind{v: 3}
+var Empty tileKind = tileKind{byte: 0}
+var Wall tileKind = tileKind{byte: 1}
+var PlayerStart tileKind = tileKind{byte: 2}
+var MoblinStart tileKind = tileKind{byte: 3}
 
 type tile struct {
 	row  int32
