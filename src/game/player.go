@@ -23,15 +23,23 @@ type Player struct {
 
 	activeItem Item
 
-	spr *graphics.Sprite
+	lastSpr *graphics.Sprite
+	sprs    []*graphics.Sprite
 }
 
 func NewPlayer(g *graphics.Graphics) *Player {
-	return &Player{
+	player := &Player{
 		speed:     200,
 		direction: 0,
-		spr:       graphics.NewSprite(0, 0, 1, 1, g),
+		sprs: []*graphics.Sprite{
+			graphics.NewSprite(0, 2, 1, 1, g),
+			graphics.NewSprite(0, 3, 1, 1, g),
+			graphics.NewSprite(0, 0, 1, 1, g),
+			graphics.NewSprite(0, 1, 1, 1, g),
+		},
 	}
+	player.lastSpr = player.sprs[2]
+	return player
 }
 
 func (p *Player) Move(d Direction) {
@@ -76,7 +84,7 @@ func (p *Player) SetActiveItemState(s bool) {
 }
 
 func (p *Player) Bounds() *sdl.Rect {
-	return &sdl.Rect{int32(p.x), int32(p.y), int32(p.spr.W), int32(p.spr.H)}
+	return &sdl.Rect{int32(p.x), int32(p.y), int32(p.sprs[0].W), int32(p.sprs[0].H)}
 }
 
 func (p *Player) SetBounds(r *sdl.Rect) {
@@ -85,9 +93,23 @@ func (p *Player) SetBounds(r *sdl.Rect) {
 }
 
 func (p *Player) Draw() {
-	p.spr.X = p.x
-	p.spr.Y = p.y
-	p.spr.Draw()
+	spr := p.lastSpr
+	if p.direction&North > 0 {
+		spr = p.sprs[0]
+	}
+	if p.direction&East > 0 {
+		spr = p.sprs[1]
+	}
+	if p.direction&South > 0 {
+		spr = p.sprs[2]
+	}
+	if p.direction&West > 0 {
+		spr = p.sprs[3]
+	}
+	p.lastSpr = spr
+	spr.X = p.x
+	spr.Y = p.y
+	spr.Draw()
 
 	p.activeItem.SetBounds(&sdl.Rect{int32(p.x) + 9, int32(p.y) + 25, 0, 0})
 	p.activeItem.Draw()
