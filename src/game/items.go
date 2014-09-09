@@ -7,17 +7,23 @@ import (
 )
 
 type Sword struct {
-	x      float32
-	y      float32
-	active bool
-	damage int32
-	spr    *graphics.Sprite
+	x       float32
+	y       float32
+	faceDir Direction
+	active  bool
+	damage  int32
+	sprs    []*graphics.Sprite
 }
 
 func NewSword(g *graphics.Graphics) *Sword {
 	return &Sword{
 		damage: 10,
-		spr:    graphics.NewSprite(2, 0, 1, 1, g),
+		sprs: []*graphics.Sprite{
+			graphics.NewSprite(2, 2, 1, 1, g),
+			graphics.NewSprite(2, 3, 1, 1, g),
+			graphics.NewSprite(2, 0, 1, 1, g),
+			graphics.NewSprite(2, 1, 1, 1, g),
+		},
 	}
 }
 
@@ -43,13 +49,28 @@ func (s *Sword) Draw() {
 	if !s.active {
 		return
 	}
-	s.spr.X = s.x
-	s.spr.Y = s.y
-	s.spr.Draw()
+	var spr *graphics.Sprite
+	switch s.faceDir {
+	case North:
+		spr = s.sprs[0]
+	case East:
+		spr = s.sprs[1]
+	case South:
+		spr = s.sprs[2]
+	case West:
+		spr = s.sprs[3]
+	}
+	spr.X = s.x
+	spr.Y = s.y
+	spr.Draw()
+}
+
+func (s *Sword) SetFaceDir(d Direction) {
+	s.faceDir = d
 }
 
 func (s *Sword) Bounds() *sdl.Rect {
-	return &sdl.Rect{int32(s.x), int32(s.y), int32(s.spr.W), int32(s.spr.H)}
+	return &sdl.Rect{int32(s.x), int32(s.y), int32(s.sprs[0].W), int32(s.sprs[0].H)}
 }
 
 func (s *Sword) SetBounds(b *sdl.Rect) {

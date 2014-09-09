@@ -12,6 +12,7 @@ type Item interface {
 	Activate()
 	Deactivate()
 	Update(dt uint32, w *World)
+	SetFaceDir(d Direction)
 	Draw()
 }
 
@@ -90,24 +91,38 @@ func (p *Player) SetBounds(r *sdl.Rect) {
 }
 
 func (p *Player) Draw() {
+	var spr *graphics.Sprite
+	var itemDx int32 = 0
+	var itemDy int32 = 0
+
 	if p.moveDir == North || p.moveDir == East || p.moveDir == South || p.moveDir == West {
 		p.faceDir = p.moveDir
 	}
-	var spr *graphics.Sprite
+
 	switch p.faceDir {
 	case North:
 		spr = p.sprs[0]
+		itemDx = -8
+		itemDy = -9
 	case East:
 		spr = p.sprs[1]
+		itemDx = 13
+		itemDy = 9
 	case South:
 		spr = p.sprs[2]
+		itemDx = 9
+		itemDy = 25
 	case West:
 		spr = p.sprs[3]
+		itemDx = -13
+		itemDy = 8
 	}
+
 	spr.X = p.x
 	spr.Y = p.y
 	spr.Draw()
 
-	p.activeItem.SetBounds(&sdl.Rect{int32(p.x) + 9, int32(p.y) + 25, 0, 0})
+	p.activeItem.SetFaceDir(p.faceDir)
+	p.activeItem.SetBounds(&sdl.Rect{int32(p.x) + itemDx, int32(p.y) + itemDy, 0, 0})
 	p.activeItem.Draw()
 }
