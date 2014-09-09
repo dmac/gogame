@@ -16,21 +16,19 @@ type Item interface {
 }
 
 type Player struct {
-	x         float32
-	y         float32
-	speed     float32 // pixels/s
-	direction Direction
-
+	x          float32
+	y          float32
+	speed      float32 // pixels/s
+	moveDir    Direction
+	faceDir    Direction
 	activeItem Item
-
-	lastSpr *graphics.Sprite
-	sprs    []*graphics.Sprite
+	sprs       []*graphics.Sprite
 }
 
 func NewPlayer(g *graphics.Graphics) *Player {
 	player := &Player{
-		speed:     200,
-		direction: 0,
+		speed:   200,
+		faceDir: South,
 		sprs: []*graphics.Sprite{
 			graphics.NewSprite(0, 2, 1, 1, g),
 			graphics.NewSprite(0, 3, 1, 1, g),
@@ -38,33 +36,32 @@ func NewPlayer(g *graphics.Graphics) *Player {
 			graphics.NewSprite(0, 1, 1, 1, g),
 		},
 	}
-	player.lastSpr = player.sprs[2]
 	return player
 }
 
 func (p *Player) Move(d Direction) {
-	p.direction |= d
+	p.moveDir |= d
 }
 
 func (p *Player) Stop(d Direction) {
-	p.direction &^= d
+	p.moveDir &^= d
 }
 
 func (p *Player) Update(dt uint32, w *World) {
 	velocity := p.speed * float32(dt) / 1000
-	if p.direction&North > 0 {
+	if p.moveDir&North > 0 {
 		p.y -= velocity
 		w.CollideWithTiles(p, North)
 	}
-	if p.direction&East > 0 {
+	if p.moveDir&East > 0 {
 		p.x += velocity
 		w.CollideWithTiles(p, East)
 	}
-	if p.direction&South > 0 {
+	if p.moveDir&South > 0 {
 		p.y += velocity
 		w.CollideWithTiles(p, South)
 	}
-	if p.direction&West > 0 {
+	if p.moveDir&West > 0 {
 		p.x -= velocity
 		w.CollideWithTiles(p, West)
 	}
@@ -93,20 +90,20 @@ func (p *Player) SetBounds(r *sdl.Rect) {
 }
 
 func (p *Player) Draw() {
-	spr := p.lastSpr
-	if p.direction&North > 0 {
+	if p.moveDir == North || p.moveDir == East || p.moveDir == South || p.moveDir == West {
+		p.faceDir = p.moveDir
+	}
+	var spr *graphics.Sprite
+	switch p.faceDir {
+	case North:
 		spr = p.sprs[0]
-	}
-	if p.direction&East > 0 {
+	case East:
 		spr = p.sprs[1]
-	}
-	if p.direction&South > 0 {
+	case South:
 		spr = p.sprs[2]
-	}
-	if p.direction&West > 0 {
+	case West:
 		spr = p.sprs[3]
 	}
-	p.lastSpr = spr
 	spr.X = p.x
 	spr.Y = p.y
 	spr.Draw()
