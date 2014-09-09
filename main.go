@@ -7,9 +7,9 @@ import (
 
 	"github.com/veandco/go-sdl2/sdl"
 
-	"clock"
-	"game"
-	"graphics"
+	"github.com/dmac/gogame/clock"
+	"github.com/dmac/gogame/game"
+	"github.com/dmac/gogame/graphics"
 )
 
 func main() {

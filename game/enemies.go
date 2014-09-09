@@ -6,7 +6,7 @@ import (
 
 	"github.com/veandco/go-sdl2/sdl"
 
-	"graphics"
+	"github.com/dmac/gogame/graphics"
 )
 
 type Slime struct {
